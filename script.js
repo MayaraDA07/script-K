@@ -1,7 +1,7 @@
-function closeModal(){
+function closeModal() {
     const button = document.createElement("button");
 
-    button.setAttribute("style",`
+    button.setAttribute("style", `
         position: absolute;
         color: white;
         right: 0%;
@@ -16,7 +16,7 @@ function closeModal(){
     `);
     button.innerHTML = "x";
 
-    button.addEventListener("click",(evt)=>{
+    button.addEventListener("click", (evt) => {
         console.log(button.parentElement);
         button.parentElement.style.transform = "scale(10%)";
         button.parentElement.style.opacity = "0%"
@@ -25,11 +25,11 @@ function closeModal(){
     return button;
 }
 
-function initial(){
+function initial() {
     const modal = document.createElement("div");
 
     const title = document.createElement("p");
-    title.setAttribute('style',`
+    title.setAttribute('style', `
         font-size: 2rem;
         font-weight: bold;
         color: white;
@@ -62,7 +62,7 @@ function initial(){
     message.innerHTML = "Após injetar o script, não atualize a página até que você termine. Caso contrário, será necessário injetar o script novamente. A partir de agora, você pode responder a qualquer pergunta, mas lembre-se de esperar cerca de 1 a 2 segundos para cada questão! Isso evitará erros. Enjoy \n R6";
     message.style.color = "white";
     message.style.position = "relative";
-    
+
     modal.appendChild(title);
     modal.appendChild(catText);
     modal.appendChild(message);
@@ -73,6 +73,7 @@ function initial(){
 
 (function () {
     'use strict';
+
     console.log("%crodando...", 'color:red; font-size:35px');
     document.body.appendChild(initial());
 
@@ -94,6 +95,7 @@ function initial(){
             const resBody = await data.clone().text();
             const obj = JSON.parse(resBody);;
             //console.log("response", res)
+
             try {
                 const newData = await data.json();
                 const items = JSON.parse(newData.data.assessmentItem.item.itemData);
@@ -117,7 +119,7 @@ function initial(){
                         displayCount: null,
                         hasNoneOfTheAbove: false,
                         hasNoneOfTheAbove: false,
-                        randomize: true
+                        randomize: false
                     },
                     static: false,
                     type: "radio",
@@ -131,11 +133,11 @@ function initial(){
                     tTable: false,
                     zTable: false,
                 }
+                items.question.content = items.question.content.split("\n")[0] + "[[☃ radio 1]]";
 
-
-                items.question.widgets = { ["radio 3"]: radio };
+                items.question.widgets = { ["radio 1"]: radio };
                 newData.data.assessmentItem.item.itemData = JSON.stringify(items);
-                
+
                 const teste = JSON.parse(newData.data.assessmentItem.item.itemData);
                 console.log(items);
                 finalRes = newData;
@@ -145,7 +147,6 @@ function initial(){
                     headers: res.headers,
                 });
                 //teste.question.widgets = {["radio 1"]:radio};
-
                 res = editRes
             } catch (error) {
                 console.error("type não encontrado ou falha na busca", error);
@@ -154,5 +155,42 @@ function initial(){
         // Aqui você verá "Resposta" e os detalhes da resposta
         return res; // Retorna a resposta como o fetch original faria
     };
+
+    return true;
 })();
+
+
+let time = true;
+
+const verif = setInterval(() => {
+    if (document.querySelector(".paragraph")) {
+        console.log("achou");
+        console.clear();
+        time = false;
+    }
+    if (!time) {
+        console.clear();
+        const res = setInterval(() => {
+            let start = true;
+            if (start) {
+                const list = document.querySelector(".perseus-widget-radio");
+                const radioSelect = list.querySelector("._umui27s ");
+                const radio = document.querySelector(".perseus-radio-option-content");
+                radio.click();
+
+                if(radio.checked){
+                    document.querySelector("._rz7ls7u").click();
+                    setTimeout(()=>{
+                        document.querySelector("._1yok8f4").click();
+                    },350);
+                }
+            }else{
+                console.log("stop");
+                clearInterval(res);
+            }
+        }, 1000);
+
+        clearInterval(verif);
+    }
+}, 100);
 
